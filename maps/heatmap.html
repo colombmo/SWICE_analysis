@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_f8a32c73aed28e1a15a6f081540d28cd {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_f8a32c73aed28e1a15a6f081540d28cd" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_f8a32c73aed28e1a15a6f081540d28cd = L.map(
+                "map_f8a32c73aed28e1a15a6f081540d28cd",
+                {
+                    center: [46.9446011, 7.4143311],
+                    crs: L.CRS.EPSG3857,
+                    zoom: 5,
+                    zoomControl: true,
+                    preferCanvas: false,
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_3f68490db0781d62a9b2ce6f8216da49 = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {"attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors", "detectRetina": false, "maxNativeZoom": 19, "maxZoom": 19, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
+            );
+        
+    
+            tile_layer_3f68490db0781d62a9b2ce6f8216da49.addTo(map_f8a32c73aed28e1a15a6f081540d28cd);
+        
+    
+        function geo_json_16612ef76f5ac8bf28b0d25c20ec44cf_styler(feature) {
+            switch(feature.properties.id) {
+                case "u0m44": 
+                    return {"fillColor": "#313695ff", "fillOpacity": 0.6, "stroke": false};
+                case "u0kcu": 
+                    return {"fillColor": "#3a53a3ff", "fillOpacity": 0.6, "stroke": false};
+                case "u0m70": 
+                    return {"fillColor": "#3d5ca8ff", "fillOpacity": 0.6, "stroke": false};
+                case "u0m71": 
+                    return {"fillColor": "#578bc0ff", "fillOpacity": 0.6, "stroke": false};
+                case "u0m46": 
+                    return {"fillColor": "#7db4d5ff", "fillOpacity": 0.6, "stroke": false};
+                case "u0kcv": 
+                    return {"fillColor": "#96c8e0ff", "fillOpacity": 0.6, "stroke": false};
+                case "ez3fh": 
+                    return {"fillColor": "#c4e5f0ff", "fillOpacity": 0.6, "stroke": false};
+                case "ez3f5": 
+                    return {"fillColor": "#def2f8ff", "fillOpacity": 0.6, "stroke": false};
+                case "u0nq9": 
+                    return {"fillColor": "#f9e4a2ff", "fillOpacity": 0.6, "stroke": false};
+                case "u0qj8": 
+                    return {"fillColor": "#fee193ff", "fillOpacity": 0.6, "stroke": false};
+                case "u0qnn": case "u0k8e": 
+                    return {"fillColor": "#fedb8bff", "fillOpacity": 0.6, "stroke": false};
+                case "u0k8w": 
+                    return {"fillColor": "#fed383ff", "fillOpacity": 0.6, "stroke": false};
+                case "u0kfm": 
+                    return {"fillColor": "#fec173ff", "fillOpacity": 0.6, "stroke": false};
+                case "u0mgt": 
+                    return {"fillColor": "#feb769ff", "fillOpacity": 0.6, "stroke": false};
+                case "u0qkm": 
+                    return {"fillColor": "#fdac60ff", "fillOpacity": 0.6, "stroke": false};
+                case "ez3f7": case "u0m41": 
+                    return {"fillColor": "#f98b50ff", "fillOpacity": 0.6, "stroke": false};
+                case "u0qj7": case "u0qjf": case "u0nq8": case "u0m40": 
+                    return {"fillColor": "#ef613dff", "fillOpacity": 0.6, "stroke": false};
+                case "u0m5p": case "u0kfh": case "u0qjd": 
+                    return {"fillColor": "#e34732ff", "fillOpacity": 0.6, "stroke": false};
+                case "u0m6u": case "ez3fd": case "u0qnp": case "u0qj9": case "u0q0t": 
+                    return {"fillColor": "#d12a27ff", "fillOpacity": 0.6, "stroke": false};
+                case "u0m2w": case "u0m4z": case "ez3f4": 
+                    return {"fillColor": "#b00a26ff", "fillOpacity": 0.6, "stroke": false};
+                case "u0nrf": case "u0qn4": case "u0qj6": case "u0m2q": case "u0m4w": case "u0kfq": case "u0mgz": case "u0qje": case "u0m6g": case "u0k8x": case "u0qjv": case "u0m47": case "u0kbd": case "u0m4s": case "u0mkm": case "u0qh0": case "u0q5s": case "u0mgs": case "u0nqv": case "u0nqd": case "u0m4t": case "u0q5d": case "u0m4e": case "u0kbg": case "u0q1e": case "u0q1u": case "u0m6j": 
+                    return {"fillColor": "#a50026ff", "fillOpacity": 0.6, "stroke": false};
+                default:
+                    return {"fillColor": "#aedbeaff", "fillOpacity": 0.6, "stroke": false};
+            }
+        }
+
+        function geo_json_16612ef76f5ac8bf28b0d25c20ec44cf_onEachFeature(feature, layer) {
+            layer.on({
+            });
+        };
+        var geo_json_16612ef76f5ac8bf28b0d25c20ec44cf = L.geoJson(null, {
+                onEachFeature: geo_json_16612ef76f5ac8bf28b0d25c20ec44cf_onEachFeature,
+            
+                style: geo_json_16612ef76f5ac8bf28b0d25c20ec44cf_styler,
+        });
+
+        function geo_json_16612ef76f5ac8bf28b0d25c20ec44cf_add (data) {
+            geo_json_16612ef76f5ac8bf28b0d25c20ec44cf
+                .addData(data);
+        }
+            geo_json_16612ef76f5ac8bf28b0d25c20ec44cf_add({"features": [{"geometry": {"coordinates": [[[7.119140625, 46.7578125], [7.119140625, 46.8017578125], [7.1630859375, 46.8017578125], [7.1630859375, 46.7578125], [7.119140625, 46.7578125]]], "type": "Polygon"}, "properties": {"fillColor": "#313695ff", "fillOpacity": 0.6, "id": "u0m44", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[6.85546875, 46.7138671875], [6.85546875, 46.7578125], [6.8994140625, 46.7578125], [6.8994140625, 46.7138671875], [6.85546875, 46.7138671875]]], "type": "Polygon"}, "properties": {"fillColor": "#3a53a3ff", "fillOpacity": 0.6, "id": "u0kcu", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[7.3828125, 46.93359375], [7.3828125, 46.9775390625], [7.4267578125, 46.9775390625], [7.4267578125, 46.93359375], [7.3828125, 46.93359375]]], "type": "Polygon"}, "properties": {"fillColor": "#3d5ca8ff", "fillOpacity": 0.6, "id": "u0m70", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[7.4267578125, 46.93359375], [7.4267578125, 46.9775390625], [7.470703125, 46.9775390625], [7.470703125, 46.93359375], [7.4267578125, 46.93359375]]], "type": "Polygon"}, "properties": {"fillColor": "#578bc0ff", "fillOpacity": 0.6, "id": "u0m71", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[7.119140625, 46.8017578125], [7.119140625, 46.845703125], [7.1630859375, 46.845703125], [7.1630859375, 46.8017578125], [7.119140625, 46.8017578125]]], "type": "Polygon"}, "properties": {"fillColor": "#7db4d5ff", "fillOpacity": 0.6, "id": "u0m46", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[6.8994140625, 46.7138671875], [6.8994140625, 46.7578125], [6.943359375, 46.7578125], [6.943359375, 46.7138671875], [6.8994140625, 46.7138671875]]], "type": "Polygon"}, "properties": {"fillColor": "#96c8e0ff", "fillOpacity": 0.6, "id": "u0kcv", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[9.3603515625, 47.4169921875], [9.3603515625, 47.4609375], [9.404296875, 47.4609375], [9.404296875, 47.4169921875], [9.3603515625, 47.4169921875]]], "type": "Polygon"}, "properties": {"fillColor": "#aedbeaff", "fillOpacity": 0.6, "id": "u0qtv", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[-8.61328125, 41.1328125], [-8.61328125, 41.1767578125], [-8.5693359375, 41.1767578125], [-8.5693359375, 41.1328125], [-8.61328125, 41.1328125]]], "type": "Polygon"}, "properties": {"fillColor": "#c4e5f0ff", "fillOpacity": 0.6, "id": "ez3fh", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[-8.6572265625, 41.1328125], [-8.6572265625, 41.1767578125], [-8.61328125, 41.1767578125], [-8.61328125, 41.1328125], [-8.6572265625, 41.1328125]]], "type": "Polygon"}, "properties": {"fillColor": "#def2f8ff", "fillOpacity": 0.6, "id": "ez3f5", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[8.8330078125, 46.142578125], [8.8330078125, 46.1865234375], [8.876953125, 46.1865234375], [8.876953125, 46.142578125], [8.8330078125, 46.142578125]]], "type": "Polygon"}, "properties": {"fillColor": "#f9e4a2ff", "fillOpacity": 0.6, "id": "u0nq9", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[8.4375, 47.373046875], [8.4375, 47.4169921875], [8.4814453125, 47.4169921875], [8.4814453125, 47.373046875], [8.4375, 47.373046875]]], "type": "Polygon"}, "properties": {"fillColor": "#fee193ff", "fillOpacity": 0.6, "id": "u0qj8", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[8.701171875, 47.4609375], [8.701171875, 47.5048828125], [8.7451171875, 47.5048828125], [8.7451171875, 47.4609375], [8.701171875, 47.4609375]]], "type": "Polygon"}, "properties": {"fillColor": "#fedb8bff", "fillOpacity": 0.6, "id": "u0qnn", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[6.4599609375, 46.494140625], [6.4599609375, 46.5380859375], [6.50390625, 46.5380859375], [6.50390625, 46.494140625], [6.4599609375, 46.494140625]]], "type": "Polygon"}, "properties": {"fillColor": "#fedb8bff", "fillOpacity": 0.6, "id": "u0k8e", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[6.591796875, 46.494140625], [6.591796875, 46.5380859375], [6.6357421875, 46.5380859375], [6.6357421875, 46.494140625], [6.591796875, 46.494140625]]], "type": "Polygon"}, "properties": {"fillColor": "#fed383ff", "fillOpacity": 0.6, "id": "u0k8w", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[6.8994140625, 46.8017578125], [6.8994140625, 46.845703125], [6.943359375, 46.845703125], [6.943359375, 46.8017578125], [6.8994140625, 46.8017578125]]], "type": "Polygon"}, "properties": {"fillColor": "#fec173ff", "fillOpacity": 0.6, "id": "u0kfm", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[8.3056640625, 47.021484375], [8.3056640625, 47.0654296875], [8.349609375, 47.0654296875], [8.349609375, 47.021484375], [8.3056640625, 47.021484375]]], "type": "Polygon"}, "properties": {"fillColor": "#feb769ff", "fillOpacity": 0.6, "id": "u0mgt", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[9.0087890625, 47.1533203125], [9.0087890625, 47.197265625], [9.052734375, 47.197265625], [9.052734375, 47.1533203125], [9.0087890625, 47.1533203125]]], "type": "Polygon"}, "properties": {"fillColor": "#fdac60ff", "fillOpacity": 0.6, "id": "u0qkm", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[-8.6572265625, 41.1767578125], [-8.6572265625, 41.220703125], [-8.61328125, 41.220703125], [-8.61328125, 41.1767578125], [-8.6572265625, 41.1767578125]]], "type": "Polygon"}, "properties": {"fillColor": "#f98b50ff", "fillOpacity": 0.6, "id": "ez3f7", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[7.0751953125, 46.7578125], [7.0751953125, 46.8017578125], [7.119140625, 46.8017578125], [7.119140625, 46.7578125], [7.0751953125, 46.7578125]]], "type": "Polygon"}, "properties": {"fillColor": "#f98b50ff", "fillOpacity": 0.6, "id": "u0m41", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[8.5693359375, 47.3291015625], [8.5693359375, 47.373046875], [8.61328125, 47.373046875], [8.61328125, 47.3291015625], [8.5693359375, 47.3291015625]]], "type": "Polygon"}, "properties": {"fillColor": "#ef613dff", "fillOpacity": 0.6, "id": "u0qj7", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[8.525390625, 47.4169921875], [8.525390625, 47.4609375], [8.5693359375, 47.4609375], [8.5693359375, 47.4169921875], [8.525390625, 47.4169921875]]], "type": "Polygon"}, "properties": {"fillColor": "#ef613dff", "fillOpacity": 0.6, "id": "u0qjf", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[8.7890625, 46.142578125], [8.7890625, 46.1865234375], [8.8330078125, 46.1865234375], [8.8330078125, 46.142578125], [8.7890625, 46.142578125]]], "type": "Polygon"}, "properties": {"fillColor": "#ef613dff", "fillOpacity": 0.6, "id": "u0nq8", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[7.03125, 46.7578125], [7.03125, 46.8017578125], [7.0751953125, 46.8017578125], [7.0751953125, 46.7578125], [7.03125, 46.7578125]]], "type": "Polygon"}, "properties": {"fillColor": "#ef613dff", "fillOpacity": 0.6, "id": "u0m40", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[7.3388671875, 46.93359375], [7.3388671875, 46.9775390625], [7.3828125, 46.9775390625], [7.3828125, 46.93359375], [7.3388671875, 46.93359375]]], "type": "Polygon"}, "properties": {"fillColor": "#e34732ff", "fillOpacity": 0.6, "id": "u0m5p", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[6.85546875, 46.7578125], [6.85546875, 46.8017578125], [6.8994140625, 46.8017578125], [6.8994140625, 46.7578125], [6.85546875, 46.7578125]]], "type": "Polygon"}, "properties": {"fillColor": "#e34732ff", "fillOpacity": 0.6, "id": "u0kfh", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[8.525390625, 47.373046875], [8.525390625, 47.4169921875], [8.5693359375, 47.4169921875], [8.5693359375, 47.373046875], [8.525390625, 47.373046875]]], "type": "Polygon"}, "properties": {"fillColor": "#e34732ff", "fillOpacity": 0.6, "id": "u0qjd", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[7.55859375, 46.8896484375], [7.55859375, 46.93359375], [7.6025390625, 46.93359375], [7.6025390625, 46.8896484375], [7.55859375, 46.8896484375]]], "type": "Polygon"}, "properties": {"fillColor": "#d12a27ff", "fillOpacity": 0.6, "id": "u0m6u", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[-8.701171875, 41.220703125], [-8.701171875, 41.2646484375], [-8.6572265625, 41.2646484375], [-8.6572265625, 41.220703125], [-8.701171875, 41.220703125]]], "type": "Polygon"}, "properties": {"fillColor": "#d12a27ff", "fillOpacity": 0.6, "id": "ez3fd", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[8.7451171875, 47.4609375], [8.7451171875, 47.5048828125], [8.7890625, 47.5048828125], [8.7890625, 47.4609375], [8.7451171875, 47.4609375]]], "type": "Polygon"}, "properties": {"fillColor": "#d12a27ff", "fillOpacity": 0.6, "id": "u0qnp", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[8.4814453125, 47.373046875], [8.4814453125, 47.4169921875], [8.525390625, 47.4169921875], [8.525390625, 47.373046875], [8.4814453125, 47.373046875]]], "type": "Polygon"}, "properties": {"fillColor": "#d12a27ff", "fillOpacity": 0.6, "id": "u0qj9", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[8.6572265625, 46.494140625], [8.6572265625, 46.5380859375], [8.701171875, 46.5380859375], [8.701171875, 46.494140625], [8.6572265625, 46.494140625]]], "type": "Polygon"}, "properties": {"fillColor": "#d12a27ff", "fillOpacity": 0.6, "id": "u0q0t", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[7.646484375, 46.494140625], [7.646484375, 46.5380859375], [7.6904296875, 46.5380859375], [7.6904296875, 46.494140625], [7.646484375, 46.494140625]]], "type": "Polygon"}, "properties": {"fillColor": "#b00a26ff", "fillOpacity": 0.6, "id": "u0m2w", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[7.3388671875, 46.8896484375], [7.3388671875, 46.93359375], [7.3828125, 46.93359375], [7.3828125, 46.8896484375], [7.3388671875, 46.8896484375]]], "type": "Polygon"}, "properties": {"fillColor": "#b00a26ff", "fillOpacity": 0.6, "id": "u0m4z", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[-8.701171875, 41.1328125], [-8.701171875, 41.1767578125], [-8.6572265625, 41.1767578125], [-8.6572265625, 41.1328125], [-8.701171875, 41.1328125]]], "type": "Polygon"}, "properties": {"fillColor": "#b00a26ff", "fillOpacity": 0.6, "id": "ez3f4", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[8.876953125, 46.3623046875], [8.876953125, 46.40625], [8.9208984375, 46.40625], [8.9208984375, 46.3623046875], [8.876953125, 46.3623046875]]], "type": "Polygon"}, "properties": {"fillColor": "#a50026ff", "fillOpacity": 0.6, "id": "u0nrf", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[8.525390625, 47.4609375], [8.525390625, 47.5048828125], [8.5693359375, 47.5048828125], [8.5693359375, 47.4609375], [8.525390625, 47.4609375]]], "type": "Polygon"}, "properties": {"fillColor": "#a50026ff", "fillOpacity": 0.6, "id": "u0qn4", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[8.525390625, 47.3291015625], [8.525390625, 47.373046875], [8.5693359375, 47.373046875], [8.5693359375, 47.3291015625], [8.525390625, 47.3291015625]]], "type": "Polygon"}, "properties": {"fillColor": "#a50026ff", "fillOpacity": 0.6, "id": "u0qj6", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[7.646484375, 46.4501953125], [7.646484375, 46.494140625], [7.6904296875, 46.494140625], [7.6904296875, 46.4501953125], [7.646484375, 46.4501953125]]], "type": "Polygon"}, "properties": {"fillColor": "#a50026ff", "fillOpacity": 0.6, "id": "u0m2q", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[7.294921875, 46.845703125], [7.294921875, 46.8896484375], [7.3388671875, 46.8896484375], [7.3388671875, 46.845703125], [7.294921875, 46.845703125]]], "type": "Polygon"}, "properties": {"fillColor": "#a50026ff", "fillOpacity": 0.6, "id": "u0m4w", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[6.943359375, 46.8017578125], [6.943359375, 46.845703125], [6.9873046875, 46.845703125], [6.9873046875, 46.8017578125], [6.943359375, 46.8017578125]]], "type": "Polygon"}, "properties": {"fillColor": "#a50026ff", "fillOpacity": 0.6, "id": "u0kfq", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[8.3935546875, 47.0654296875], [8.3935546875, 47.109375], [8.4375, 47.109375], [8.4375, 47.0654296875], [8.3935546875, 47.0654296875]]], "type": "Polygon"}, "properties": {"fillColor": "#a50026ff", "fillOpacity": 0.6, "id": "u0mgz", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[8.5693359375, 47.373046875], [8.5693359375, 47.4169921875], [8.61328125, 47.4169921875], [8.61328125, 47.373046875], [8.5693359375, 47.373046875]]], "type": "Polygon"}, "properties": {"fillColor": "#a50026ff", "fillOpacity": 0.6, "id": "u0qje", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[7.5146484375, 46.8896484375], [7.5146484375, 46.93359375], [7.55859375, 46.93359375], [7.55859375, 46.8896484375], [7.5146484375, 46.8896484375]]], "type": "Polygon"}, "properties": {"fillColor": "#a50026ff", "fillOpacity": 0.6, "id": "u0m6g", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[6.6357421875, 46.494140625], [6.6357421875, 46.5380859375], [6.6796875, 46.5380859375], [6.6796875, 46.494140625], [6.6357421875, 46.494140625]]], "type": "Polygon"}, "properties": {"fillColor": "#a50026ff", "fillOpacity": 0.6, "id": "u0k8x", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[8.6572265625, 47.4169921875], [8.6572265625, 47.4609375], [8.701171875, 47.4609375], [8.701171875, 47.4169921875], [8.6572265625, 47.4169921875]]], "type": "Polygon"}, "properties": {"fillColor": "#a50026ff", "fillOpacity": 0.6, "id": "u0qjv", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[7.1630859375, 46.8017578125], [7.1630859375, 46.845703125], [7.20703125, 46.845703125], [7.20703125, 46.8017578125], [7.1630859375, 46.8017578125]]], "type": "Polygon"}, "properties": {"fillColor": "#a50026ff", "fillOpacity": 0.6, "id": "u0m47", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[6.767578125, 46.494140625], [6.767578125, 46.5380859375], [6.8115234375, 46.5380859375], [6.8115234375, 46.494140625], [6.767578125, 46.494140625]]], "type": "Polygon"}, "properties": {"fillColor": "#a50026ff", "fillOpacity": 0.6, "id": "u0kbd", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[7.20703125, 46.845703125], [7.20703125, 46.8896484375], [7.2509765625, 46.8896484375], [7.2509765625, 46.845703125], [7.20703125, 46.845703125]]], "type": "Polygon"}, "properties": {"fillColor": "#a50026ff", "fillOpacity": 0.6, "id": "u0m4s", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[7.6025390625, 47.1533203125], [7.6025390625, 47.197265625], [7.646484375, 47.197265625], [7.646484375, 47.1533203125], [7.6025390625, 47.1533203125]]], "type": "Polygon"}, "properties": {"fillColor": "#a50026ff", "fillOpacity": 0.6, "id": "u0mkm", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[8.4375, 47.109375], [8.4375, 47.1533203125], [8.4814453125, 47.1533203125], [8.4814453125, 47.109375], [8.4375, 47.109375]]], "type": "Polygon"}, "properties": {"fillColor": "#a50026ff", "fillOpacity": 0.6, "id": "u0qh0", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[8.61328125, 47.021484375], [8.61328125, 47.0654296875], [8.6572265625, 47.0654296875], [8.6572265625, 47.021484375], [8.61328125, 47.021484375]]], "type": "Polygon"}, "properties": {"fillColor": "#a50026ff", "fillOpacity": 0.6, "id": "u0q5s", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[8.26171875, 47.021484375], [8.26171875, 47.0654296875], [8.3056640625, 47.0654296875], [8.3056640625, 47.021484375], [8.26171875, 47.021484375]]], "type": "Polygon"}, "properties": {"fillColor": "#a50026ff", "fillOpacity": 0.6, "id": "u0mgs", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[9.0087890625, 46.1865234375], [9.0087890625, 46.23046875], [9.052734375, 46.23046875], [9.052734375, 46.1865234375], [9.0087890625, 46.1865234375]]], "type": "Polygon"}, "properties": {"fillColor": "#a50026ff", "fillOpacity": 0.6, "id": "u0nqv", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[8.876953125, 46.142578125], [8.876953125, 46.1865234375], [8.9208984375, 46.1865234375], [8.9208984375, 46.142578125], [8.876953125, 46.142578125]]], "type": "Polygon"}, "properties": {"fillColor": "#a50026ff", "fillOpacity": 0.6, "id": "u0nqd", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[7.2509765625, 46.845703125], [7.2509765625, 46.8896484375], [7.294921875, 46.8896484375], [7.294921875, 46.845703125], [7.2509765625, 46.845703125]]], "type": "Polygon"}, "properties": {"fillColor": "#a50026ff", "fillOpacity": 0.6, "id": "u0m4t", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[8.525390625, 47.021484375], [8.525390625, 47.0654296875], [8.5693359375, 47.0654296875], [8.5693359375, 47.021484375], [8.525390625, 47.021484375]]], "type": "Polygon"}, "properties": {"fillColor": "#a50026ff", "fillOpacity": 0.6, "id": "u0q5d", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[7.1630859375, 46.845703125], [7.1630859375, 46.8896484375], [7.20703125, 46.8896484375], [7.20703125, 46.845703125], [7.1630859375, 46.845703125]]], "type": "Polygon"}, "properties": {"fillColor": "#a50026ff", "fillOpacity": 0.6, "id": "u0m4e", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[6.8115234375, 46.5380859375], [6.8115234375, 46.58203125], [6.85546875, 46.58203125], [6.85546875, 46.5380859375], [6.8115234375, 46.5380859375]]], "type": "Polygon"}, "properties": {"fillColor": "#a50026ff", "fillOpacity": 0.6, "id": "u0kbg", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[8.5693359375, 46.669921875], [8.5693359375, 46.7138671875], [8.61328125, 46.7138671875], [8.61328125, 46.669921875], [8.5693359375, 46.669921875]]], "type": "Polygon"}, "properties": {"fillColor": "#a50026ff", "fillOpacity": 0.6, "id": "u0q1e", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[8.61328125, 46.7138671875], [8.61328125, 46.7578125], [8.6572265625, 46.7578125], [8.6572265625, 46.7138671875], [8.61328125, 46.7138671875]]], "type": "Polygon"}, "properties": {"fillColor": "#a50026ff", "fillOpacity": 0.6, "id": "u0q1u", "stroke": false}, "type": "Feature"}, {"geometry": {"coordinates": [[[7.6025390625, 46.7578125], [7.6025390625, 46.8017578125], [7.646484375, 46.8017578125], [7.646484375, 46.7578125], [7.6025390625, 46.7578125]]], "type": "Polygon"}, "properties": {"fillColor": "#a50026ff", "fillOpacity": 0.6, "id": "u0m6j", "stroke": false}, "type": "Feature"}], "type": "FeatureCollection"});
+
+        
+    
+            geo_json_16612ef76f5ac8bf28b0d25c20ec44cf.addTo(map_f8a32c73aed28e1a15a6f081540d28cd);
+        
+    
+            var layer_control_522d193c5c3c56819dc7ed4ef437ffa0_layers = {
+                base_layers : {
+                    "openstreetmap" : tile_layer_3f68490db0781d62a9b2ce6f8216da49,
+                },
+                overlays :  {
+                    "Polygon Layer" : geo_json_16612ef76f5ac8bf28b0d25c20ec44cf,
+                },
+            };
+            let layer_control_522d193c5c3c56819dc7ed4ef437ffa0 = L.control.layers(
+                layer_control_522d193c5c3c56819dc7ed4ef437ffa0_layers.base_layers,
+                layer_control_522d193c5c3c56819dc7ed4ef437ffa0_layers.overlays,
+                {"autoZIndex": true, "collapsed": true, "position": "topright"}
+            ).addTo(map_f8a32c73aed28e1a15a6f081540d28cd);
+
+        
+</script>
+</html>
