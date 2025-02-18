@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>pydeck</title>
+        <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.13.0/mapbox-gl.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    <script src='https://cdn.jsdelivr.net/npm/@deck.gl/jupyter-widget@~9.0.*/dist/index.js'></script>
+    <style>
+    body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+#deck-container {
+  width: 100vw;
+  height: 100vh;
+}
+
+#deck-container canvas {
+  z-index: 1;
+  background: none;
+}
+    </style>
+  </head>
+  <body>
+    <div id="deck-container">
+    </div>
+  </body>
+  <script>
+    const container = document.getElementById('deck-container');
+    const jsonInput = {
+  "initialViewState": {
+    "latitude": 45.94433221188853,
+    "longitude": 6.306339397188204,
+    "pitch": 30,
+    "zoom": 8
+  },
+  "layers": [
+    {
+      "@@type": "ArcLayer",
+      "autoHighlight": true,
+      "data": [
+        {
+          "color": [
+            255,
+            105,
+            180,
+            128
+          ],
+          "color_start": [
+            178.5,
+            73.5,
+            125.99999999999999,
+            89.6
+          ],
+          "counts": 1,
+          "end_coords": [
+            6.130562672399804,
+            46.20810622422494
+          ],
+          "mean_of_transport": "CAR",
+          "start_coords": [
+            6.306110792229209,
+            45.94522204741821
+          ],
+          "width": 2.5
+        },
+        {
+          "color": [
+            0,
+            0,
+            0,
+            128
+          ],
+          "color_start": [
+            0.0,
+            0.0,
+            0.0,
+            89.6
+          ],
+          "counts": 1,
+          "end_coords": [
+            6.322167651662206,
+            45.96411385900306
+          ],
+          "mean_of_transport": "DETECTION_ERROR",
+          "start_coords": [
+            6.311295260456779,
+            45.95859585584439
+          ],
+          "width": 2.5
+        },
+        {
+          "color": [
+            100,
+            149,
+            237,
+            128
+          ],
+          "color_start": [
+            70.0,
+            104.3,
+            165.89999999999998,
+            89.6
+          ],
+          "counts": 1,
+          "end_coords": [
+            6.3936452428942,
+            46.472585149551946
+          ],
+          "mean_of_transport": "ON_BICYCLE",
+          "start_coords": [
+            6.130408124005891,
+            46.20855054553052
+          ],
+          "width": 2.5
+        },
+        {
+          "color": [
+            0,
+            191,
+            255,
+            128
+          ],
+          "color_start": [
+            0.0,
+            133.7,
+            178.5,
+            89.6
+          ],
+          "counts": 1,
+          "end_coords": [
+            6.569853242718616,
+            46.51623192470084
+          ],
+          "mean_of_transport": "TRAIN",
+          "start_coords": [
+            6.130293959583089,
+            46.20805964760926
+          ],
+          "width": 2.5
+        },
+        {
+          "color": [
+            0,
+            191,
+            255,
+            128
+          ],
+          "color_start": [
+            0.0,
+            133.7,
+            178.5,
+            89.6
+          ],
+          "counts": 3,
+          "end_coords": [
+            7.140775570821111,
+            46.77998725928257
+          ],
+          "mean_of_transport": "TRAIN",
+          "start_coords": [
+            6.130834722762182,
+            46.20835549306544
+          ],
+          "width": 5.0
+        },
+        {
+          "color": [
+            0,
+            191,
+            255,
+            128
+          ],
+          "color_start": [
+            0.0,
+            133.7,
+            178.5,
+            89.6
+          ],
+          "counts": 1,
+          "end_coords": [
+            7.141429126190202,
+            46.82414620981437
+          ],
+          "mean_of_transport": "TRAIN",
+          "start_coords": [
+            6.130048575249314,
+            46.2089112072482
+          ],
+          "width": 2.5
+        },
+        {
+          "color": [
+            255,
+            105,
+            180,
+            128
+          ],
+          "color_start": [
+            178.5,
+            73.5,
+            125.99999999999999,
+            89.6
+          ],
+          "counts": 1,
+          "end_coords": [
+            6.1244926450685355,
+            46.20610248069232
+          ],
+          "mean_of_transport": "CAR",
+          "start_coords": [
+            6.1136063779634275,
+            46.2054878051417
+          ],
+          "width": 2.5
+        },
+        {
+          "color": [
+            100,
+            149,
+            237,
+            128
+          ],
+          "color_start": [
+            70.0,
+            104.3,
+            165.89999999999998,
+            89.6
+          ],
+          "counts": 1,
+          "end_coords": [
+            6.1245895999186555,
+            46.205560176631494
+          ],
+          "mean_of_transport": "ON_BICYCLE",
+          "start_coords": [
+            6.1245015790133985,
+            46.205601399201115
+          ],
+          "width": 2.5
+        },
+        {
+          "color": [
+            255,
+            105,
+            180,
+            128
+          ],
+          "color_start": [
+            178.5,
+            73.5,
+            125.99999999999999,
+            89.6
+          ],
+          "counts": 1,
+          "end_coords": [
+            6.158196305242653,
+            46.20598485530871
+          ],
+          "mean_of_transport": "CAR",
+          "start_coords": [
+            6.124917928605976,
+            46.2062382582604
+          ],
+          "width": 2.5
+        },
+        {
+          "color": [
+            255,
+            182,
+            193,
+            128
+          ],
+          "color_start": [
+            178.5,
+            127.39999999999999,
+            135.1,
+            89.6
+          ],
+          "counts": 1,
+          "end_coords": [
+            6.080992804791884,
+            46.233154017328935
+          ],
+          "mean_of_transport": "BUS",
+          "start_coords": [
+            6.124530465565569,
+            46.2053435628364
+          ],
+          "width": 2.5
+        },
+        {
+          "color": [
+            100,
+            149,
+            237,
+            128
+          ],
+          "color_start": [
+            70.0,
+            104.3,
+            165.89999999999998,
+            89.6
+          ],
+          "counts": 1,
+          "end_coords": [
+            6.125024836181707,
+            46.20575419566492
+          ],
+          "mean_of_transport": "ON_BICYCLE",
+          "start_coords": [
+            6.146471140236015,
+            46.20037572556154
+          ],
+          "width": 2.5
+        },
+        {
+          "color": [
+            100,
+            149,
+            237,
+            128
+          ],
+          "color_start": [
+            70.0,
+            104.3,
+            165.89999999999998,
+            89.6
+          ],
+          "counts": 1,
+          "end_coords": [
+            6.125050551559467,
+            46.20614874945117
+          ],
+          "mean_of_transport": "ON_BICYCLE",
+          "start_coords": [
+            6.146662753030604,
+            46.206192099353835
+          ],
+          "width": 2.5
+        },
+        {
+          "color": [
+            255,
+            182,
+            193,
+            128
+          ],
+          "color_start": [
+            178.5,
+            127.39999999999999,
+            135.1,
+            89.6
+          ],
+          "counts": 1,
+          "end_coords": [
+            6.125277273390446,
+            46.20565834397594
+          ],
+          "mean_of_transport": "BUS",
+          "start_coords": [
+            6.136360667347862,
+            46.21109506151837
+          ],
+          "width": 2.5
+        },
+        {
+          "color": [
+            100,
+            149,
+            237,
+            128
+          ],
+          "color_start": [
+            70.0,
+            104.3,
+            165.89999999999998,
+            89.6
+          ],
+          "counts": 1,
+          "end_coords": [
+            6.124977958685976,
+            46.20572353056167
+          ],
+          "mean_of_transport": "ON_BICYCLE",
+          "start_coords": [
+            6.15742794762664,
+            46.20590302703884
+          ],
+          "width": 2.5
+        },
+        {
+          "color": [
+            255,
+            182,
+            193,
+            128
+          ],
+          "color_start": [
+            178.5,
+            127.39999999999999,
+            135.1,
+            89.6
+          ],
+          "counts": 1,
+          "end_coords": [
+            6.125353838061524,
+            46.20618419996995
+          ],
+          "mean_of_transport": "BUS",
+          "start_coords": [
+            6.08094562543672,
+            46.23349662115193
+          ],
+          "width": 2.5
+        },
+        {
+          "color": [
+            70,
+            130,
+            180,
+            128
+          ],
+          "color_start": [
+            49.0,
+            91.0,
+            125.99999999999999,
+            89.6
+          ],
+          "counts": 1,
+          "end_coords": [
+            6.322565021715267,
+            45.963969864133055
+          ],
+          "mean_of_transport": "WALKING",
+          "start_coords": [
+            6.333663221047065,
+            45.95870859272393
+          ],
+          "width": 2.5
+        },
+        {
+          "color": [
+            0,
+            191,
+            255,
+            128
+          ],
+          "color_start": [
+            0.0,
+            133.7,
+            178.5,
+            89.6
+          ],
+          "counts": 1,
+          "end_coords": [
+            7.141602389291528,
+            46.77975725577543
+          ],
+          "mean_of_transport": "TRAIN",
+          "start_coords": [
+            6.394015109424336,
+            46.4718095329714
+          ],
+          "width": 2.5
+        },
+        {
+          "color": [
+            100,
+            149,
+            237,
+            128
+          ],
+          "color_start": [
+            70.0,
+            104.3,
+            165.89999999999998,
+            89.6
+          ],
+          "counts": 1,
+          "end_coords": [
+            6.575538667062341,
+            46.54080961105845
+          ],
+          "mean_of_transport": "ON_BICYCLE",
+          "start_coords": [
+            6.5640290488264466,
+            46.524529779216515
+          ],
+          "width": 2.5
+        },
+        {
+          "color": [
+            0,
+            191,
+            255,
+            128
+          ],
+          "color_start": [
+            0.0,
+            133.7,
+            178.5,
+            89.6
+          ],
+          "counts": 1,
+          "end_coords": [
+            6.12991412339464,
+            46.20832102653067
+          ],
+          "mean_of_transport": "TRAIN",
+          "start_coords": [
+            6.569402262213861,
+            46.55957142976358
+          ],
+          "width": 2.5
+        },
+        {
+          "color": [
+            0,
+            191,
+            255,
+            128
+          ],
+          "color_start": [
+            0.0,
+            133.7,
+            178.5,
+            89.6
+          ],
+          "counts": 1,
+          "end_coords": [
+            6.129884971109229,
+            46.208946149376736
+          ],
+          "mean_of_transport": "TRAIN",
+          "start_coords": [
+            6.83315700022352,
+            46.51576150503699
+          ],
+          "width": 2.5
+        },
+        {
+          "color": [
+            0,
+            191,
+            255,
+            128
+          ],
+          "color_start": [
+            0.0,
+            133.7,
+            178.5,
+            89.6
+          ],
+          "counts": 1,
+          "end_coords": [
+            6.130052676807901,
+            46.20823941990361
+          ],
+          "mean_of_transport": "TRAIN",
+          "start_coords": [
+            7.097595346128866,
+            46.77975860354926
+          ],
+          "width": 2.5
+        },
+        {
+          "color": [
+            0,
+            191,
+            255,
+            128
+          ],
+          "color_start": [
+            0.0,
+            133.7,
+            178.5,
+            89.6
+          ],
+          "counts": 1,
+          "end_coords": [
+            6.130196528869907,
+            46.208067387959915
+          ],
+          "mean_of_transport": "TRAIN",
+          "start_coords": [
+            7.140917743676983,
+            46.78022536106887
+          ],
+          "width": 2.5
+        },
+        {
+          "color": [
+            70,
+            130,
+            180,
+            128
+          ],
+          "color_start": [
+            49.0,
+            91.0,
+            125.99999999999999,
+            89.6
+          ],
+          "counts": 1,
+          "end_coords": [
+            7.157218199430567,
+            46.80471267452696
+          ],
+          "mean_of_transport": "WALKING",
+          "start_coords": [
+            7.146337276801273,
+            46.793279284053945
+          ],
+          "width": 2.5
+        },
+        {
+          "color": [
+            70,
+            130,
+            180,
+            128
+          ],
+          "color_start": [
+            49.0,
+            91.0,
+            125.99999999999999,
+            89.6
+          ],
+          "counts": 1,
+          "end_coords": [
+            7.15806806611449,
+            46.804861763133566
+          ],
+          "mean_of_transport": "WALKING",
+          "start_coords": [
+            7.146511262436754,
+            46.79901459207154
+          ],
+          "width": 2.5
+        },
+        {
+          "color": [
+            0,
+            191,
+            255,
+            128
+          ],
+          "color_start": [
+            0.0,
+            133.7,
+            178.5,
+            89.6
+          ],
+          "counts": 2,
+          "end_coords": [
+            6.130466201986724,
+            46.20815568322475
+          ],
+          "mean_of_transport": "TRAIN",
+          "start_coords": [
+            7.141571535325489,
+            46.82408359967838
+          ],
+          "width": 3.9624062518028906
+        },
+        {
+          "color": [
+            70,
+            130,
+            180,
+            128
+          ],
+          "color_start": [
+            49.0,
+            91.0,
+            125.99999999999999,
+            89.6
+          ],
+          "counts": 1,
+          "end_coords": [
+            7.15761810586696,
+            46.799152523571344
+          ],
+          "mean_of_transport": "WALKING",
+          "start_coords": [
+            7.146162698519574,
+            46.804560052772615
+          ],
+          "width": 2.5
+        },
+        {
+          "color": [
+            100,
+            149,
+            237,
+            128
+          ],
+          "color_start": [
+            70.0,
+            104.3,
+            165.89999999999998,
+            89.6
+          ],
+          "counts": 1,
+          "end_coords": [
+            7.168459458004479,
+            46.79906863120041
+          ],
+          "mean_of_transport": "ON_BICYCLE",
+          "start_coords": [
+            7.146278214604332,
+            46.804404659200266
+          ],
+          "width": 2.5
+        },
+        {
+          "color": [
+            100,
+            149,
+            237,
+            128
+          ],
+          "color_start": [
+            70.0,
+            104.3,
+            165.89999999999998,
+            89.6
+          ],
+          "counts": 1,
+          "end_coords": [
+            7.157555824754574,
+            46.80488748602
+          ],
+          "mean_of_transport": "ON_BICYCLE",
+          "start_coords": [
+            7.158032329815865,
+            46.804800324735425
+          ],
+          "width": 2.5
+        },
+        {
+          "color": [
+            70,
+            130,
+            180,
+            128
+          ],
+          "color_start": [
+            49.0,
+            91.0,
+            125.99999999999999,
+            89.6
+          ],
+          "counts": 1,
+          "end_coords": [
+            7.157359320255895,
+            46.804523839758254
+          ],
+          "mean_of_transport": "WALKING",
+          "start_coords": [
+            7.157232055957281,
+            46.80466390706786
+          ],
+          "width": 2.5
+        }
+      ],
+      "getHeight": -5000,
+      "getSourceColor": "@@=color_start",
+      "getSourcePosition": "@@=start_coords",
+      "getTargetColor": "@@=color",
+      "getTargetPosition": "@@=end_coords",
+      "getWidth": "@@=width",
+      "id": "dd27e012-0662-4cd2-8047-efe908eccba7",
+      "pickable": true
+    }
+  ],
+  "mapProvider": "carto",
+  "mapStyle": "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
+  "views": [
+    {
+      "@@type": "MapView",
+      "controller": true
+    }
+  ]
+};
+    const tooltip = {'text': '{mean_of_transport} - {counts}'};
+    const customLibraries = null;
+    const configuration = null;
+
+    const deckInstance = createDeck({
+                  container,
+      jsonInput,
+      tooltip,
+      customLibraries,
+      configuration
+    });
+
+  </script>
+</html>
