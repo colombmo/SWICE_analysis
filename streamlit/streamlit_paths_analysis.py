@@ -3,7 +3,6 @@ import pandas as pd
 import folium
 from folium.plugins import HeatMap
 from branca.colormap import linear
-import geohash2
 import json
 import math
 import random
@@ -11,6 +10,7 @@ import numpy as np
 import pydeck as pdk
 import streamlit as st
 import matplotlib.pyplot as plt
+from geolib import geohash as geolib
 
 
 # Setup
@@ -42,16 +42,37 @@ swiss_boundaries = {
     "max_lat": 47.80848549672742
 }
 
+# Geohashes to coordinates, from file if it exists, otherwise create it
+try:
+    with open('geohashes_to_coords.json', 'r') as f:
+        geo_to_coords = json.load(f)
+except:
+    geo_to_coords = {}
 
-## Get a coordinate from a geohash, adding a small random offset to avoid overlapping
+## Get coordinates from geohashes
 def geohash_to_coordinate(geohash):
     try:
-        lat, lon = geohash2.decode(geohash)
+        lat, lon = geolib.decode(geohash)
         #lat = float(lat) + 0.00000001#(random.random() - 0.5) * 0.00000001
         #lon = float(lon) + 0.00000001#(random.random() - 0.5) * 0.00000001
         return [float(lat), float(lon)]
     except:
-        return [float(0.0), float(0.0)]
+        return [0.0, 0.0]
+
+# Get coordinates from geohashes
+def geohashes_to_coordinate(df):
+    # Get all geohashes in df
+    geohashes = df['geohash'].unique()
+
+    # Get coordinates for each geohash and store in dictionary
+    for geohash in geohashes:
+        if geohash not in geo_to_coords:
+            geo_to_coords[geohash] = geohash_to_coordinate(geohash)
+
+    # Save the dictionary to file
+    with open('geohashes_to_coords.json', 'w') as f:
+        json.dump(geo_to_coords, f)
+
 
 # Read the data from the csv
 @st.cache_data
@@ -127,18 +148,20 @@ isin_switzerland = st.sidebar.checkbox("Only Switzerland", value=True)
 geohash_precision = st.sidebar.slider("Geohash Precision", 6, 9, 9)
 
 # Filter data
+df = reduce_precision(df, geohash_precision)
+
+# Populate the geohash to coordinates dictionary
+geohashes_to_coordinate(df)
+
 df = df[df['month'].isin(selected_months)]
 
 df = df[df['hour'].isin(selected_times)]
 
 df = df[df['mode_of_transport'].isin(selected_modes)]
 
-df = reduce_precision(df, geohash_precision)
-
-# Transform geohashes to coordinates# Heatmap using pydeck
-df['coordinates'] = df['geohash'].apply(geohash_to_coordinate)
-df['latitude'] = df['coordinates'].apply(lambda x: x[0])
-df['longitude'] = df['coordinates'].apply(lambda x: x[1])
+# Transform geohashes to coordinates
+df['coords'] = df['geohash'].map(geo_to_coords)
+df[['latitude', 'longitude']] = pd.DataFrame(df['coords'].tolist(), index=df.index)
 
 if isin_switzerland:
     df = df[(df['latitude'] >= swiss_boundaries['min_lat']) & (df['latitude'] <= swiss_boundaries['max_lat']) & 

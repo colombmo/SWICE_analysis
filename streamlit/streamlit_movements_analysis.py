@@ -3,13 +3,13 @@ import pandas as pd
 import folium
 from folium.plugins import HeatMap
 from branca.colormap import linear
-from geolib import geohash as geolib
 import json
 import math
 import random
 import numpy as np
 import pydeck as pdk
 import streamlit as st
+from geolib import geohash as geolib
 
 
 # Setup
@@ -34,15 +34,31 @@ st.markdown(
 )
 
 
-## Get a coordinate from a geohash, adding a small random offset to avoid overlapping
+# Geohashes to coordinates
+geo_to_coords = {}
+
+## Get coordinates from geohashes
 def geohash_to_coordinate(geohash):
     try:
         lat, lon = geolib.decode(geohash)
         #lat = float(lat) + 0.00000001#(random.random() - 0.5) * 0.00000001
         #lon = float(lon) + 0.00000001#(random.random() - 0.5) * 0.00000001
-        return [float(lat), float(lon)]
+        return np.array([float(lat), float(lon)])
     except:
-        return [float(0.0), float(0.0)]
+        return np.array([0.0, 0.0])
+
+# Get coordinates from geohashes
+def geohashes_to_coordinate(df):
+    # Get all geohashes in df
+    start = df['start_geohash'].unique()
+    end = df['end_geohash'].unique()
+    geohashes = np.unique(np.concatenate([start, end]))
+
+    # Get coordinates for each geohash and store in dictionary
+    for geohash in geohashes:
+        if geohash not in geo_to_coords:
+            geo_to_coords[geohash] = geohash_to_coordinate(geohash)
+
 
 # Read the data from the csv
 @st.cache_data
@@ -191,6 +207,11 @@ colors = {
 }
 
 # Filter data
+#df = reduce_precision(df, 10000, geohash_precision)
+
+# Populate the geohash to coordinates dictionary
+geohashes_to_coordinate(df)
+
 df = merge_consecutive_movements(df, max_time)
 
 df = df[df['distance(m)'] >= min_distance * 1000]
@@ -204,27 +225,37 @@ df = df[df['start_time'].dt.date >= start_date]
 
 df = df[df['mean_of_transport'].isin(selected_modes)]
 
-df = reduce_precision(df, 10000, geohash_precision)
-
 # Show the number of rows in the sidebar
 st.sidebar.write(f"Number of rows: {df.shape[0]}")
 
-# Prepare data for Pydeck
 # Transform geohashes to coordinates
-df['start_coords'] = df['start_geohash'].apply(geohash_to_coordinate)
-df['end_coords'] = df['end_geohash'].apply(geohash_to_coordinate)
+df['start_coords'] = df['start_geohash'].map(lambda x: geo_to_coords.get(x, np.array([0.0, 0.0], dtype=np.float64)))
+df['end_coords'] = df['end_geohash'].map(lambda x: geo_to_coords.get(x, np.array([0.0, 0.0], dtype=np.float64)))
 
-# Add slight offsets to avoid overlaps
-df['start_coords'] = df['start_coords'].apply(lambda x: [x[1] + (random.random() - 0.5) * rand_factor, x[0] + (random.random() - 0.5) * rand_factor])
-df['end_coords'] = df['end_coords'].apply(lambda x: [x[1] + (random.random() - 0.5) * rand_factor, x[0] + (random.random() - 0.5) * rand_factor])
+rand_offsets = (np.random.rand(len(df), 2) - 0.5) * rand_factor  # Precompute offsets
 
+df[['start_lon', 'start_lat']] = np.stack(df['start_coords'])  # Convert lists to columns
+df[['end_lon', 'end_lat']] = np.stack(df['end_coords'])
+
+df['start_lat'] += rand_offsets[:, 0]
+df['start_lon'] += rand_offsets[:, 1]
+df['end_lat'] += rand_offsets[:, 0]
+df['end_lon'] += rand_offsets[:, 1]
+
+df['start_coords'] = list(zip(df['start_lat'], df['start_lon']))  # Convert back to lists
+df['end_coords'] = list(zip(df['end_lat'], df['end_lon']))
+
+df.drop(columns=['start_lat', 'start_lon', 'end_lat', 'end_lon'], inplace=True)  # Clean up
+
+# Add date of the movement as string
+df['start_date'] = df['start_time'].dt.strftime('%d-%m-%Y')
 
 # Add random height to the start and end coordinates
 #df['start_coords'] = df['start_coords'].apply(lambda x: [x[0], x[1], random.randint(10000, 20000)])
 #df['end_coords'] = df['end_coords'].apply(lambda x: [x[0], x[1], random.randint(10000, 20000)])
 
 # Create data list for Pydeck
-path_data = df[['start_coords', 'end_coords', 'mean_of_transport', 'participant_id']].copy()
+path_data = df[['start_coords', 'end_coords', 'mean_of_transport', 'participant_id', 'start_date']].copy()
 path_data['color'] = path_data['mean_of_transport'].apply(lambda x: colors.get(x, [0, 0, 0])) # Default black for unknown transport
 path_data['color_start'] = path_data['color'].apply(lambda x: [xi * 0.7 for xi in x])  # Slightly darker starting 
 
@@ -243,19 +274,26 @@ layer = pdk.Layer(
 )
 
 # Define View
-view_state = pdk.ViewState(
-    latitude=df['start_coords'].iloc[0][1],
-    longitude=df['start_coords'].iloc[0][0],
-    zoom=8,
-    pitch=30,
-)
+# Set initial view state based on the initial data
+if 'initial_view_state' not in st.session_state:
+    st.session_state.initial_view_state = pdk.ViewState(
+        latitude=df['start_coords'].iloc[0][1],
+        longitude=df['start_coords'].iloc[0][0],
+        zoom=8,
+        min_zoom=5,
+        max_zoom=17,
+        pitch=30
+    )
+
+view_state = st.session_state.initial_view_state
+
 
 # Render map
 st.pydeck_chart(
     pdk.Deck(
         layers=[layer], 
         initial_view_state=view_state, 
-        tooltip={"text": "{participant_id} - {mean_of_transport}"}
+        tooltip={"text": "{participant_id} - {mean_of_transport} - {start_date}"}
         ),
         use_container_width=True,
     )
