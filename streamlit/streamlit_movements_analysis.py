@@ -176,6 +176,8 @@ max_time = st.sidebar.slider("Maximum time between movements to merge them (minu
 
 # Start date range
 start_date = st.sidebar.date_input("Start Date", min_value=min(df['start_time']), max_value=max(df['start_time']), value=min(df['start_time']))
+# End date range
+end_date = st.sidebar.date_input("End Date", min_value=min(df['start_time']), max_value=max(df['start_time']), value=max(df['start_time']))
 
 transport_modes = ["Car", "Train", "Walking", "Bicycle", "Bus", "Tram", "Plane", "Boat"]
 selected_modes = st.sidebar.multiselect("Select Transport Modes", transport_modes, default=transport_modes)
@@ -222,6 +224,7 @@ if max_distance > 0:
 df = df[df['participant_id'].isin(selected_participants)]
 
 df = df[df['start_time'].dt.date >= start_date]
+df = df[df['start_time'].dt.date <= end_date]
 
 df = df[df['mean_of_transport'].isin(selected_modes)]
 
@@ -280,7 +283,7 @@ if 'initial_view_state' not in st.session_state:
         latitude=df['start_coords'].iloc[0][1],
         longitude=df['start_coords'].iloc[0][0],
         zoom=8,
-        min_zoom=3,
+        min_zoom=2,
         max_zoom=17,
         pitch=30
     )
