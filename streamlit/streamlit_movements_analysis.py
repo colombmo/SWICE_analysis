@@ -280,7 +280,7 @@ if 'initial_view_state' not in st.session_state:
         latitude=df['start_coords'].iloc[0][1],
         longitude=df['start_coords'].iloc[0][0],
         zoom=8,
-        min_zoom=5,
+        min_zoom=3,
         max_zoom=17,
         pitch=30
     )
@@ -298,3 +298,19 @@ st.pydeck_chart(
         use_container_width=True,
     )
 
+st.sidebar.markdown("### Legend")
+legend_items = {
+    "Walking": "rgba(70,130,180,0.7)",
+    "Bicycle / Scooter": "rgba(100,149,237,0.7)",
+    "Train": "rgba(0,191,255,0.7)",
+    "Tram": "rgba(255,160,122,0.7)",
+    "Bus / Coach": "rgba(255,182,193,0.7)",
+    "Car / Plane / Boat": "rgba(255,105,180,0.7)",
+}
+
+for label, color in legend_items.items():
+    st.sidebar.markdown(
+        f"<div style='display: flex; align-items: center;'>"
+        f"<div style='background-color: {color}; width: 20px; height: 10px; margin-right: 8px;'></div>{label}</div>",
+        unsafe_allow_html=True
+    )

@@ -11,6 +11,7 @@ import pydeck as pdk
 import streamlit as st
 import matplotlib.pyplot as plt
 from geolib import geohash as geolib
+from matplotlib import colormaps as cmaps
 
 
 # Setup
@@ -60,18 +61,22 @@ def geohash_to_coordinate(geohash):
         return [0.0, 0.0]
 
 # Get coordinates from geohashes
-def geohashes_to_coordinate(df):
-    # Get all geohashes in df
-    geohashes = df['geohash'].unique()
-
+@st.cache_data
+def geohashes_to_coordinate(geohashes):
     # Get coordinates for each geohash and store in dictionary
+    new_data = False
     for geohash in geohashes:
         if geohash not in geo_to_coords:
+            new_data = True
             geo_to_coords[geohash] = geohash_to_coordinate(geohash)
 
     # Save the dictionary to file
-    with open('geohashes_to_coords.json', 'w') as f:
-        json.dump(geo_to_coords, f)
+    if new_data:
+        with open('geohashes_to_coords.json', 'w') as f:
+            json.dump(geo_to_coords, f)
+
+    return geo_to_coords
+    
 
 
 # Read the data from the csv
@@ -87,7 +92,10 @@ def load_data(path):
     df['hour'] = df['time_range'].apply(lambda x: x.split('-')[0])
     df['hour'] = df['hour'].astype(int)
 
-    return df
+    # Group by geohash, month, hour and mode of transport, and count the number of occurrences -- faster for the viz later
+    agg = df.groupby(['geohash', 'month', 'hour', 'mode_of_transport']).size().reset_index(name='count')
+
+    return agg
 
 # Filter to reduce the precision of geohashes
 def reduce_precision(df, precision):
@@ -116,13 +124,18 @@ def translate_mot(mots):
             res.update(["BOAT", "BOAT_NO_ENGINE"])
     return list(res)
 
+# Define the colormap
+@st.cache_resource
+def set_colormap(cm_name='plasma'):
+    base = cmaps[cm_name]
+    # Define plasma color map
+    plasma_colormap = [base(i)[:3] for i in range(256)]  # Get 256 RGB values
+    plasma_colormap = [[int(r*255), int(g*255), int(b*255)] for r, g, b in plasma_colormap]  # Convert to 0-255
+    return plasma_colormap
+
 
 # Load data
 df = load_data('../data/pathpoints.csv')
-
-# Define plasma color map
-plasma_colormap = [plt.cm.plasma(i)[:3] for i in range(256)]  # Get 256 RGB values
-plasma_colormap = [[int(r*255), int(g*255), int(b*255)] for r, g, b in plasma_colormap]  # Convert to 0-255
 
 #### FILTERS ####
 # Sidebar filters
@@ -151,13 +164,15 @@ geohash_precision = st.sidebar.slider("Geohash Precision", 6, 9, 9)
 df = reduce_precision(df, geohash_precision)
 
 # Populate the geohash to coordinates dictionary
-geohashes_to_coordinate(df)
+geo_to_coords = geohashes_to_coordinate(df['geohash'].unique())
 
 df = df[df['month'].isin(selected_months)]
 
 df = df[df['hour'].isin(selected_times)]
 
 df = df[df['mode_of_transport'].isin(selected_modes)]
+
+df = df.groupby('geohash', as_index=False)['count'].sum()
 
 # Transform geohashes to coordinates
 df['coords'] = df['geohash'].map(geo_to_coords)
@@ -167,28 +182,38 @@ if isin_switzerland:
     df = df[(df['latitude'] >= swiss_boundaries['min_lat']) & (df['latitude'] <= swiss_boundaries['max_lat']) & 
             (df['longitude'] >= swiss_boundaries['min_lon']) & (df['longitude'] <= swiss_boundaries['max_lon'])]
 
+# Choose colormap based on user selection
+colormap_name = st.sidebar.selectbox("Select Colormap", ["plasma", "coolwarm", "copper", "pink", "bone", "viridis", "magma", "inferno", "cividis"])
+# Set colormap
+plasma_colormap = set_colormap(colormap_name)
+
+# Change opacity based on user selection
+opacity = st.sidebar.slider("Opacity", 0.1, 1.0, 0.7)
+
 # Show the number of rows in the sidebar
 st.sidebar.write(f"Number of rows: {df.shape[0]}")
 
 # Prepare data for Pydeck
+
+# Create a Pydeck layer
 layer = pdk.Layer(
     'HeatmapLayer',
     df,
     get_position=['longitude', 'latitude'],
-    get_weight='1',
+    get_weight='count',
     color_range=plasma_colormap,  # Apply Plasma colormap
     aggregation = 'SUM',
-    opacity=0.8,
-    pickable=True
+    opacity=opacity,
+    pickable=False
 )
 
 # Set initial view state based on the initial data
 if 'initial_view_state' not in st.session_state:
     st.session_state.initial_view_state = pdk.ViewState(
-        latitude=df['latitude'].median(),
-        longitude=df['longitude'].median(),
+        latitude=46.799713,
+        longitude=8.235587,
         zoom=8,
-        min_zoom=5,
+        min_zoom=3,
         max_zoom=17,
     )
 
@@ -197,7 +222,8 @@ view_state = st.session_state.initial_view_state
 st.pydeck_chart(
     pdk.Deck(
         layer,
-        initial_view_state=view_state
+        initial_view_state=view_state,
+        map_style="dark",
     ),
     use_container_width=True
 )
