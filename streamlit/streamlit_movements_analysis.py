@@ -10,6 +10,7 @@ import numpy as np
 import pydeck as pdk
 import streamlit as st
 from geolib import geohash as geolib
+import os
 
 
 # Setup
@@ -162,7 +163,8 @@ else:
             ok = True
         except Exception as e:
             ok = False
-            st.warning("Please upload a CSV file containing the paths data.")
+            st.warning("Current directory: " + os.getcwd())
+            st.warning("Please upload a CSV file containing the movements data.")
 
 if ok:
     #### FILTERS ####
