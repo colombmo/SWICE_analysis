@@ -150,8 +150,6 @@ else:
             df = load_data('./data/pathpoints.csv')
             ok = True
         except Exception as e:
-            st.error("Error loading paths data." + str(e))
-            st.warning("Current directory: " + os.getcwd())
             ok = False
             st.warning("Please upload a CSV file containing the paths data.")
 

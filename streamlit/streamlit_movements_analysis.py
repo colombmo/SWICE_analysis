@@ -157,8 +157,12 @@ else:
         df = load_data('../data/Test_movements.csv')
         ok = True
     except Exception as e:
-        st.warning("Please upload a CSV file containing the paths data.")  
-        ok = False
+        try:
+            df = load_data('./data/Test_movements.csv')
+            ok = True
+        except Exception as e:
+            ok = False
+            st.warning("Please upload a CSV file containing the paths data.")
 
 if ok:
     #### FILTERS ####
