@@ -138,7 +138,7 @@ smmap==5.0.2
 snuggs==1.4.7
 soupsieve==2.7
 stack-data==0.6.2
-streamlit==1.42.1
+streamlit==1.48.1
 tenacity==9.0.0
 threadpoolctl==3.5.0
 tinycss2==1.4.0
