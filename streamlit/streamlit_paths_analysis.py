@@ -12,6 +12,7 @@ import streamlit as st
 import matplotlib.pyplot as plt
 from geolib import geohash as geolib
 from matplotlib import colormaps as cmaps
+import os
 
 
 # Setup
@@ -150,6 +151,7 @@ else:
             ok = True
         except Exception as e:
             st.error("Error loading paths data." + str(e))
+            st.warning("Current directory: " + os.getcwd())
             ok = False
             st.warning("Please upload a CSV file containing the paths data.")
 
