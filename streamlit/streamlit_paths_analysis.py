@@ -83,7 +83,7 @@ def geohashes_to_coordinate(geohashes):
 @st.cache_data
 def load_data(path):
     # Read the data from the csv
-    df = gpd.read_file(path)
+    df = pd.read_csv(path, sep=";")
 
     # Transform month and time to int
     df['month'] = df['month'].astype(int)
@@ -135,95 +135,108 @@ def set_colormap(cm_name='plasma'):
 
 
 # Load data
-df = load_data('../data/pathpoints.csv')
+uploaded = st.sidebar.file_uploader("Upload paths CSV", type="csv")
+ok = False
+if uploaded:
+    df = load_data(uploaded)
+    ok = True
+else:
+    try:
+        df = load_data('../data/pathpoints.csv')
+        ok = True
+    except Exception as e:
+        print(e)
+        ok = False
+        st.warning("Please upload a CSV file containing the paths data.")
 
-#### FILTERS ####
-# Sidebar filters
-st.sidebar.header("Filters")
+if ok:
+    #### FILTERS ####
+    # Sidebar filters
+    st.sidebar.header("Filters")
 
-# Select month range
-selected_months = st.sidebar.slider("Select Month Range", min_value=1, max_value=12, value=(1, 12))
-selected_months = list(range(selected_months[0], selected_months[1] + 1))
+    # Select month range
+    selected_months = st.sidebar.slider("Select Month Range", min_value=1, max_value=12, value=(1, 12))
+    selected_months = list(range(selected_months[0], selected_months[1] + 1))
 
-# Select time range
-selected_times = st.sidebar.slider("Select Time Range", min_value=0, max_value=23, value=(0, 23))
-selected_times = list(range(selected_times[0], selected_times[1] + 1))
+    # Select time range
+    selected_times = st.sidebar.slider("Select Time Range", min_value=0, max_value=23, value=(0, 23))
+    selected_times = list(range(selected_times[0], selected_times[1] + 1))
 
-# Select transport modes
-transport_modes = ["Car", "Train", "Walking", "Bicycle", "Bus", "Tram", "Plane", "Boat"]
-selected_modes = st.sidebar.multiselect("Select Transport Modes", transport_modes, default=transport_modes)
-selected_modes = translate_mot(selected_modes)
+    # Select transport modes
+    transport_modes = ["Car", "Train", "Walking", "Bicycle", "Bus", "Tram", "Plane", "Boat"]
+    selected_modes = st.sidebar.multiselect("Select Transport Modes", transport_modes, default=transport_modes)
+    selected_modes = translate_mot(selected_modes)
 
-# Only switzerland
-isin_switzerland = st.sidebar.checkbox("Only Switzerland", value=True)
+    # Only switzerland
+    isin_switzerland = st.sidebar.checkbox("Only Switzerland", value=True)
 
-# Geohash precision
-geohash_precision = st.sidebar.slider("Geohash Precision", 6, 9, 9)
+    # Geohash precision
+    geohash_precision = st.sidebar.slider("Geohash Precision", 6, 9, 9)
 
-# Filter data
-df = reduce_precision(df, geohash_precision)
+    # Filter data
+    df = reduce_precision(df, geohash_precision)
 
-# Populate the geohash to coordinates dictionary
-geo_to_coords = geohashes_to_coordinate(df['geohash'].unique())
+    # Populate the geohash to coordinates dictionary
+    geo_to_coords = geohashes_to_coordinate(df['geohash'].unique())
 
-df = df[df['month'].isin(selected_months)]
+    df = df[df['month'].isin(selected_months)]
 
-df = df[df['hour'].isin(selected_times)]
+    df = df[df['hour'].isin(selected_times)]
 
-df = df[df['mode_of_transport'].isin(selected_modes)]
+    df = df[df['mode_of_transport'].isin(selected_modes)]
 
-df = df.groupby('geohash', as_index=False)['count'].sum()
+    df = df.groupby('geohash', as_index=False)['count'].sum()
 
-# Transform geohashes to coordinates
-df['coords'] = df['geohash'].map(geo_to_coords)
-df[['latitude', 'longitude']] = pd.DataFrame(df['coords'].tolist(), index=df.index)
+    # Transform geohashes to coordinates
+    df['coords'] = df['geohash'].map(geo_to_coords)
+    df[['latitude', 'longitude']] = pd.DataFrame(df['coords'].tolist(), index=df.index)
 
-if isin_switzerland:
-    df = df[(df['latitude'] >= swiss_boundaries['min_lat']) & (df['latitude'] <= swiss_boundaries['max_lat']) & 
-            (df['longitude'] >= swiss_boundaries['min_lon']) & (df['longitude'] <= swiss_boundaries['max_lon'])]
+    if isin_switzerland:
+        df = df[(df['latitude'] >= swiss_boundaries['min_lat']) & (df['latitude'] <= swiss_boundaries['max_lat']) & 
+                (df['longitude'] >= swiss_boundaries['min_lon']) & (df['longitude'] <= swiss_boundaries['max_lon'])]
 
-# Choose colormap based on user selection
-colormap_name = st.sidebar.selectbox("Select Colormap", ["plasma", "coolwarm", "copper", "pink", "bone", "viridis", "magma", "inferno", "cividis"])
-# Set colormap
-plasma_colormap = set_colormap(colormap_name)
+    # Choose colormap based on user selection
+    colormap_name = st.sidebar.selectbox("Select Colormap", ["plasma", "coolwarm", "copper", "pink", "bone", "viridis", "magma", "inferno", "cividis"])
+    # Set colormap
+    plasma_colormap = set_colormap(colormap_name)
 
-# Change opacity based on user selection
-opacity = st.sidebar.slider("Opacity", 0.1, 1.0, 0.7)
+    # Change opacity based on user selection
+    opacity = st.sidebar.slider("Opacity", 0.1, 1.0, 0.7)
 
-# Show the number of rows in the sidebar
-st.sidebar.write(f"Number of rows: {df.shape[0]}")
+    # Show the number of rows in the sidebar
+    st.sidebar.write(f"Number of rows: {df.shape[0]}")
 
-# Prepare data for Pydeck
+    # Prepare data for Pydeck
 
-# Create a Pydeck layer
-layer = pdk.Layer(
-    'HeatmapLayer',
-    df,
-    get_position=['longitude', 'latitude'],
-    get_weight='count',
-    color_range=plasma_colormap,  # Apply Plasma colormap
-    aggregation = 'SUM',
-    opacity=opacity,
-    pickable=False
-)
-
-# Set initial view state based on the initial data
-if 'initial_view_state' not in st.session_state:
-    st.session_state.initial_view_state = pdk.ViewState(
-        latitude=46.799713,
-        longitude=8.235587,
-        zoom=8,
-        min_zoom=3,
-        max_zoom=17,
+    # Create a Pydeck layer
+    layer = pdk.Layer(
+        'HeatmapLayer',
+        df,
+        get_position=['longitude', 'latitude'],
+        get_weight='count',
+        color_range=plasma_colormap,  # Apply Plasma colormap
+        aggregation = 'SUM',
+        opacity=opacity,
+        pickable=False
     )
 
-view_state = st.session_state.initial_view_state
+    # Set initial view state based on the initial data
+    if 'initial_view_state' not in st.session_state:
+        st.session_state.initial_view_state = pdk.ViewState(
+            latitude=46.799713,
+            longitude=8.235587,
+            zoom=8,
+            min_zoom=3,
+            max_zoom=17,
+        )
 
-st.pydeck_chart(
-    pdk.Deck(
-        layer,
-        initial_view_state=view_state,
-        map_style="dark",
-    ),
-    use_container_width=True
-)
+    view_state = st.session_state.initial_view_state
+
+    st.pydeck_chart(
+        pdk.Deck(
+            layer,
+            initial_view_state=view_state,
+            map_style="dark",
+        ),
+        use_container_width=True
+    )

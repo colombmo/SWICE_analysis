@@ -64,7 +64,7 @@ def geohashes_to_coordinate(df):
 @st.cache_data
 def load_data(path):
     # Read the data from the csv
-    df = gpd.read_file(path)
+    df = pd.read_csv(path, sep=";")
 
     # Remove timezone
     df['start_time'] = df['start_time'].str[:-6]
@@ -147,173 +147,185 @@ def merge_consecutive_movements(df, time_min):
 
 
 # Load data
-df = load_data('../data/Test_movements.csv')
+uploaded = st.sidebar.file_uploader("Upload movements CSV", type="csv")
+ok = False
+if uploaded:
+    df = load_data(uploaded)
+    ok = True
+else:
+    try:
+        df = load_data('../data/Test_movements.csv')
+        ok = True
+    except Exception as e:
+        st.warning("Please upload a CSV file containing the paths data.")  
+        ok = False
 
-#### FILTERS ####
-# Sidebar filters
-st.sidebar.header("Filters")
+if ok:
+    #### FILTERS ####
+    # Sidebar filters
+    st.sidebar.header("Filters")
 
-# Width of lines
-line_width = st.sidebar.slider("Line Width", 0.1, 5.0, 1.0)
+    # Width of lines
+    line_width = st.sidebar.slider("Line Width", 0.1, 5.0, 1.0)
 
-# Transparency of lines
-alpha_perc = st.sidebar.slider("Line Alpha", 0.0, 1.0, 0.5)
+    # Transparency of lines
+    alpha_perc = st.sidebar.slider("Line Alpha", 0.0, 1.0, 0.5)
 
-# Randomness of line positions
-rand_factor = st.sidebar.slider("Randomness of Line Positions", 0, 100, 10)*0.0001
+    # Randomness of line positions
+    rand_factor = st.sidebar.slider("Randomness of Line Positions", 0, 100, 10)*0.0001
 
-# Minimum length of trips
-min_distance = st.sidebar.slider("Minimum Distance (km)", 0, 150, 0)
+    # Minimum length of trips
+    min_distance = st.sidebar.slider("Minimum Distance (km)", 0, 150, 0)
 
-# maxium length of trips
-max_distance = st.sidebar.slider("Maximum Distance (m)", 0, 10000, 0)
+    # maxium length of trips
+    max_distance = st.sidebar.slider("Maximum Distance (m)", 0, 10000, 0)
 
-# Geohash precision for long trips
-geohash_precision = st.sidebar.slider("Geohash Precision for long trips", 4, 6, 6)
+    # Geohash precision for long trips
+    geohash_precision = st.sidebar.slider("Geohash Precision for long trips", 4, 6, 6)
 
-# Maximum time between movements to merge them, whgen they have the same mode of transport
-max_time = st.sidebar.slider("Maximum time between movements to merge them (minutes)", 0, 120, 0)
+    # Maximum time between movements to merge them, whgen they have the same mode of transport
+    max_time = st.sidebar.slider("Maximum time between movements to merge them (minutes)", 0, 120, 0)
 
-# Start date range
-start_date = st.sidebar.date_input("Start Date", min_value=min(df['start_time']), max_value=max(df['start_time']), value=min(df['start_time']))
-# End date range
-end_date = st.sidebar.date_input("End Date", min_value=min(df['start_time']), max_value=max(df['start_time']), value=max(df['start_time']))
+    # Start date range
+    start_date = st.sidebar.date_input("Start Date", min_value=min(df['start_time']), max_value=max(df['start_time']), value=min(df['start_time']))
+    # End date range
+    end_date = st.sidebar.date_input("End Date", min_value=min(df['start_time']), max_value=max(df['start_time']), value=max(df['start_time']))
 
-transport_modes = ["Car", "Train", "Walking", "Bicycle", "Bus", "Tram", "Plane", "Boat"]
-selected_modes = st.sidebar.multiselect("Select Transport Modes", transport_modes, default=transport_modes)
-selected_modes = translate_mot(selected_modes)
+    transport_modes = ["Car", "Train", "Walking", "Bicycle", "Bus", "Tram", "Plane", "Boat"]
+    selected_modes = st.sidebar.multiselect("Select Transport Modes", transport_modes, default=transport_modes)
+    selected_modes = translate_mot(selected_modes)
 
-# Participants
-participants = df['participant_id'].unique()
-selected_participants = st.sidebar.multiselect("Select Participants", participants, default=participants)
+    # Participants
+    participants = df['participant_id'].unique()
+    selected_participants = st.sidebar.multiselect("Select Participants", participants, default=participants)
 
-##################
-alpha = int(255 * alpha_perc)
-colors = {
-    'WALKING': [70, 130, 180, alpha],      # Steel Blue (distinct blue for walking)
-    'ON_BICYCLE': [100, 149, 237, alpha],  # Cornflower Blue (different blue for bike)
-    'ELECTRIC_BIKE': [100, 149, 237, alpha],
-    'SCOOTER': [100, 149, 237, alpha],
-    'TRAIN': [0, 191, 255, alpha],         # Deep Sky Blue (different blue for train)
-    'BUS': [255, 182, 193, alpha],         # Light Pink (distinct from car/tram/plane)
-    'ELECTRIC_BUS': [255, 182, 193, alpha],
-    'COACH': [255, 182, 193, alpha],
-    'CAR': [255, 105, 180, alpha],        # Hot Pink (distinct for car)
-    'ELECTRIC_CAR': [255, 105, 180, alpha],
-    'HYBRID_CAR': [255, 105, 180, alpha],
-    'TRAM': [255, 160, 122, alpha],       # Light Salmon Pink (distinct from bus and car)
-    'PLANE': [255, 105, 180, alpha],      # Hot Pink (same as car, but could be changed if needed)
-    'BOAT': [255, 105, 180, alpha],       # Hot Pink
-    'BOAT_NO_ENGINE': [255, 105, 180, alpha],
-    'DETECTION_ERROR': [0, 0, 0, alpha],  # Black
-}
+    ##################
+    alpha = int(255 * alpha_perc)
+    colors = {
+        'WALKING': [70, 130, 180, alpha],      # Steel Blue (distinct blue for walking)
+        'ON_BICYCLE': [100, 149, 237, alpha],  # Cornflower Blue (different blue for bike)
+        'ELECTRIC_BIKE': [100, 149, 237, alpha],
+        'SCOOTER': [100, 149, 237, alpha],
+        'TRAIN': [0, 191, 255, alpha],         # Deep Sky Blue (different blue for train)
+        'BUS': [255, 182, 193, alpha],         # Light Pink (distinct from car/tram/plane)
+        'ELECTRIC_BUS': [255, 182, 193, alpha],
+        'COACH': [255, 182, 193, alpha],
+        'CAR': [255, 105, 180, alpha],        # Hot Pink (distinct for car)
+        'ELECTRIC_CAR': [255, 105, 180, alpha],
+        'HYBRID_CAR': [255, 105, 180, alpha],
+        'TRAM': [255, 160, 122, alpha],       # Light Salmon Pink (distinct from bus and car)
+        'PLANE': [255, 105, 180, alpha],      # Hot Pink (same as car, but could be changed if needed)
+        'BOAT': [255, 105, 180, alpha],       # Hot Pink
+        'BOAT_NO_ENGINE': [255, 105, 180, alpha],
+        'DETECTION_ERROR': [0, 0, 0, alpha],  # Black
+    }
 
-# Filter data
-#df = reduce_precision(df, 10000, geohash_precision)
+    # Filter data
+    #df = reduce_precision(df, 10000, geohash_precision)
 
-# Populate the geohash to coordinates dictionary
-geohashes_to_coordinate(df)
+    # Populate the geohash to coordinates dictionary
+    geohashes_to_coordinate(df)
 
-df = merge_consecutive_movements(df, max_time)
+    df = merge_consecutive_movements(df, max_time)
 
-df = df[df['distance(m)'] >= min_distance * 1000]
+    df = df[df['distance(m)'] >= min_distance * 1000]
 
-if max_distance > 0:
-    df = df[df['distance(m)'] <= max_distance]
+    if max_distance > 0:
+        df = df[df['distance(m)'] <= max_distance]
 
-df = df[df['participant_id'].isin(selected_participants)]
+    df = df[df['participant_id'].isin(selected_participants)]
 
-df = df[df['start_time'].dt.date >= start_date]
-df = df[df['start_time'].dt.date <= end_date]
+    df = df[df['start_time'].dt.date >= start_date]
+    df = df[df['start_time'].dt.date <= end_date]
 
-df = df[df['mean_of_transport'].isin(selected_modes)]
+    df = df[df['mean_of_transport'].isin(selected_modes)]
 
-# Show the number of rows in the sidebar
-st.sidebar.write(f"Number of rows: {df.shape[0]}")
+    # Show the number of rows in the sidebar
+    st.sidebar.write(f"Number of rows: {df.shape[0]}")
 
-# Transform geohashes to coordinates
-df['start_coords'] = df['start_geohash'].map(lambda x: geo_to_coords.get(x, np.array([0.0, 0.0], dtype=np.float64)))
-df['end_coords'] = df['end_geohash'].map(lambda x: geo_to_coords.get(x, np.array([0.0, 0.0], dtype=np.float64)))
+    # Transform geohashes to coordinates
+    df['start_coords'] = df['start_geohash'].map(lambda x: geo_to_coords.get(x, np.array([0.0, 0.0], dtype=np.float64)))
+    df['end_coords'] = df['end_geohash'].map(lambda x: geo_to_coords.get(x, np.array([0.0, 0.0], dtype=np.float64)))
 
-rand_offsets = (np.random.rand(len(df), 2) - 0.5) * rand_factor  # Precompute offsets
+    rand_offsets = (np.random.rand(len(df), 2) - 0.5) * rand_factor  # Precompute offsets
 
-df[['start_lon', 'start_lat']] = np.stack(df['start_coords'])  # Convert lists to columns
-df[['end_lon', 'end_lat']] = np.stack(df['end_coords'])
+    df[['start_lon', 'start_lat']] = np.stack(df['start_coords'])  # Convert lists to columns
+    df[['end_lon', 'end_lat']] = np.stack(df['end_coords'])
 
-df['start_lat'] += rand_offsets[:, 0]
-df['start_lon'] += rand_offsets[:, 1]
-df['end_lat'] += rand_offsets[:, 0]
-df['end_lon'] += rand_offsets[:, 1]
+    df['start_lat'] += rand_offsets[:, 0]
+    df['start_lon'] += rand_offsets[:, 1]
+    df['end_lat'] += rand_offsets[:, 0]
+    df['end_lon'] += rand_offsets[:, 1]
 
-df['start_coords'] = list(zip(df['start_lat'], df['start_lon']))  # Convert back to lists
-df['end_coords'] = list(zip(df['end_lat'], df['end_lon']))
+    df['start_coords'] = list(zip(df['start_lat'], df['start_lon']))  # Convert back to lists
+    df['end_coords'] = list(zip(df['end_lat'], df['end_lon']))
 
-df.drop(columns=['start_lat', 'start_lon', 'end_lat', 'end_lon'], inplace=True)  # Clean up
+    df.drop(columns=['start_lat', 'start_lon', 'end_lat', 'end_lon'], inplace=True)  # Clean up
 
-# Add date of the movement as string
-df['start_date'] = df['start_time'].dt.strftime('%d-%m-%Y')
+    # Add date of the movement as string
+    df['start_date'] = df['start_time'].dt.strftime('%d-%m-%Y')
 
-# Add random height to the start and end coordinates
-#df['start_coords'] = df['start_coords'].apply(lambda x: [x[0], x[1], random.randint(10000, 20000)])
-#df['end_coords'] = df['end_coords'].apply(lambda x: [x[0], x[1], random.randint(10000, 20000)])
+    # Add random height to the start and end coordinates
+    #df['start_coords'] = df['start_coords'].apply(lambda x: [x[0], x[1], random.randint(10000, 20000)])
+    #df['end_coords'] = df['end_coords'].apply(lambda x: [x[0], x[1], random.randint(10000, 20000)])
 
-# Create data list for Pydeck
-path_data = df[['start_coords', 'end_coords', 'mean_of_transport', 'participant_id', 'start_date']].copy()
-path_data['color'] = path_data['mean_of_transport'].apply(lambda x: colors.get(x, [0, 0, 0])) # Default black for unknown transport
-path_data['color_start'] = path_data['color'].apply(lambda x: [xi * 0.7 for xi in x])  # Slightly darker starting 
+    # Create data list for Pydeck
+    path_data = df[['start_coords', 'end_coords', 'mean_of_transport', 'participant_id', 'start_date']].copy()
+    path_data['color'] = path_data['mean_of_transport'].apply(lambda x: colors.get(x, [0, 0, 0])) # Default black for unknown transport
+    path_data['color_start'] = path_data['color'].apply(lambda x: [xi * 0.7 for xi in x])  # Slightly darker starting 
 
 
-# Pydeck Layer
-layer = pdk.Layer(
-    "ArcLayer",  # Change to "LineLayer" if needed
-    data=path_data,
-    get_source_position="start_coords",
-    get_target_position="end_coords",
-    get_source_color="color_start",
-    get_target_color="color",
-    get_width=line_width,
-    pickable=True,
-    auto_highlight=True,
-)
-
-# Define View
-# Set initial view state based on the initial data
-if 'initial_view_state' not in st.session_state:
-    st.session_state.initial_view_state = pdk.ViewState(
-        latitude=df['start_coords'].iloc[0][1],
-        longitude=df['start_coords'].iloc[0][0],
-        zoom=8,
-        min_zoom=2,
-        max_zoom=17,
-        pitch=30
+    # Pydeck Layer
+    layer = pdk.Layer(
+        "ArcLayer",  # Change to "LineLayer" if needed
+        data=path_data,
+        get_source_position="start_coords",
+        get_target_position="end_coords",
+        get_source_color="color_start",
+        get_target_color="color",
+        get_width=line_width,
+        pickable=True,
+        auto_highlight=True,
     )
 
-view_state = st.session_state.initial_view_state
+    # Define View
+    # Set initial view state based on the initial data
+    if 'initial_view_state' not in st.session_state:
+        st.session_state.initial_view_state = pdk.ViewState(
+            latitude=df['start_coords'].iloc[0][1],
+            longitude=df['start_coords'].iloc[0][0],
+            zoom=8,
+            min_zoom=2,
+            max_zoom=17,
+            pitch=30
+        )
+
+    view_state = st.session_state.initial_view_state
 
 
-# Render map
-st.pydeck_chart(
-    pdk.Deck(
-        layers=[layer], 
-        initial_view_state=view_state, 
-        tooltip={"text": "{participant_id} - {mean_of_transport} - {start_date}"}
-        ),
-        use_container_width=True,
-    )
+    # Render map
+    st.pydeck_chart(
+        pdk.Deck(
+            layers=[layer], 
+            initial_view_state=view_state, 
+            tooltip={"text": "{participant_id} - {mean_of_transport} - {start_date}"}
+            ),
+            use_container_width=True,
+        )
 
-st.sidebar.markdown("### Legend")
-legend_items = {
-    "Walking": "rgba(70,130,180,0.7)",
-    "Bicycle / Scooter": "rgba(100,149,237,0.7)",
-    "Train": "rgba(0,191,255,0.7)",
-    "Tram": "rgba(255,160,122,0.7)",
-    "Bus / Coach": "rgba(255,182,193,0.7)",
-    "Car / Plane / Boat": "rgba(255,105,180,0.7)",
-}
+    st.sidebar.markdown("### Legend")
+    legend_items = {
+        "Walking": "rgba(70,130,180,0.7)",
+        "Bicycle / Scooter": "rgba(100,149,237,0.7)",
+        "Train": "rgba(0,191,255,0.7)",
+        "Tram": "rgba(255,160,122,0.7)",
+        "Bus / Coach": "rgba(255,182,193,0.7)",
+        "Car / Plane / Boat": "rgba(255,105,180,0.7)",
+    }
 
-for label, color in legend_items.items():
-    st.sidebar.markdown(
-        f"<div style='display: flex; align-items: center;'>"
-        f"<div style='background-color: {color}; width: 20px; height: 10px; margin-right: 8px;'></div>{label}</div>",
-        unsafe_allow_html=True
-    )
+    for label, color in legend_items.items():
+        st.sidebar.markdown(
+            f"<div style='display: flex; align-items: center;'>"
+            f"<div style='background-color: {color}; width: 20px; height: 10px; margin-right: 8px;'></div>{label}</div>",
+            unsafe_allow_html=True
+        )
