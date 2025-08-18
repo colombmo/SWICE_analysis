@@ -149,7 +149,7 @@ else:
             df = load_data('swice_analysis/data/pathpoints.csv')
             ok = True
         except Exception as e:
-            print(e)
+            st.error("Error loading paths data." + str(e))
             ok = False
             st.warning("Please upload a CSV file containing the paths data.")
 
