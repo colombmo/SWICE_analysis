@@ -1,18 +1,14 @@
-import geopandas as gpd
 import pandas as pd
-import folium
-from folium.plugins import HeatMap
 from branca.colormap import linear
-import json
-import math
-import random
 import numpy as np
 import pydeck as pdk
 import streamlit as st
 import matplotlib.pyplot as plt
 from geolib import geohash as geolib
 from matplotlib import colormaps as cmaps
-import os
+import pickle
+from pathlib import Path
+import time
 
 
 # Setup
@@ -46,8 +42,8 @@ swiss_boundaries = {
 
 # Geohashes to coordinates, from file if it exists, otherwise create it
 try:
-    with open('geohashes_to_coords.json', 'r') as f:
-        geo_to_coords = json.load(f)
+    with Path('geohashes_to_coords.pkl').open("rb") as f:
+        geo_to_coords = pickle.load(f)
 except:
     geo_to_coords = {}
 
@@ -62,23 +58,29 @@ def geohash_to_coordinate(geohash):
         return [0.0, 0.0]
 
 # Get coordinates from geohashes
-@st.cache_data
 def geohashes_to_coordinate(geohashes):
     # Get coordinates for each geohash and store in dictionary
-    new_data = False
+    new_data = True
     for geohash in geohashes:
         if geohash not in geo_to_coords:
-            new_data = True
             geo_to_coords[geohash] = geohash_to_coordinate(geohash)
+            new_data = True
 
     # Save the dictionary to file
     if new_data:
-        with open('geohashes_to_coords.json', 'w') as f:
-            json.dump(geo_to_coords, f)
-
+        try:
+            with open('geohashes_to_coords.pkl', 'wb') as f:
+                pickle.dump(geo_to_coords, f, protocol=pickle.HIGHEST_PROTOCOL)
+        except Exception as e:
+            pass
     return geo_to_coords
     
-
+# For geohashes shorter than the precision, add random (valid) characters to the end
+def complete_geohash(geohash, precision):
+    base32 = '0123456789bcdefghjkmnpqrstuvwxyz'
+    if len(geohash) < precision:
+        geohash += ''.join(np.random.choice(list(base32), precision - len(geohash)))
+    return geohash
 
 # Read the data from the csv
 @st.cache_data
@@ -94,7 +96,7 @@ def load_data(path):
     df['hour'] = df['hour'].astype(int)
 
     # Group by geohash, month, hour and mode of transport, and count the number of occurrences -- faster for the viz later
-    agg = df.groupby(['geohash', 'month', 'hour', 'mode_of_transport']).size().reset_index(name='count')
+    agg = df.groupby(['geohash', 'month', 'hour', 'mode_of_transport'], sort=False).size().reset_index(name='count')
 
     return agg
 
@@ -127,7 +129,7 @@ def translate_mot(mots):
 
 # Define the colormap
 @st.cache_resource
-def set_colormap(cm_name='plasma'):
+def set_colormap(cm_name='coolwarm'):
     base = cmaps[cm_name]
     # Define plasma color map
     plasma_colormap = [base(i)[:3] for i in range(256)]  # Get 256 RGB values
@@ -176,29 +178,34 @@ if ok:
     # Filter data
     df = reduce_precision(df, geohash_precision)
 
+    df = df.loc[
+        df["month"].isin(selected_months)
+        & df["hour"].isin(selected_times)
+        & df["mode_of_transport"].isin(selected_modes)
+    ].copy()
+
+    # Geohash precision reduction and collapse to per-geohash totals
+    # Geohash precision reduction (with random completion if shorter)
+    #df["geohash"] = df["geohash"].apply(lambda gh: complete_geohash(str(gh), geohash_precision))
+    df["geohash"] = df["geohash"].str.slice(0, geohash_precision)
+    df = df.groupby("geohash", as_index=False, sort=False)["count"].sum()
+
     # Populate the geohash to coordinates dictionary
-    geo_to_coords = geohashes_to_coordinate(df['geohash'].unique())
+    geo_to_coords = geohashes_to_coordinate(df['geohash'].astype(str).unique())
 
-    df = df[df['month'].isin(selected_months)]
-
-    df = df[df['hour'].isin(selected_times)]
-
-    df = df[df['mode_of_transport'].isin(selected_modes)]
-
-    df = df.groupby('geohash', as_index=False)['count'].sum()
-
-    # Transform geohashes to coordinates
-    df['coords'] = df['geohash'].map(geo_to_coords)
-    df[['latitude', 'longitude']] = pd.DataFrame(df['coords'].tolist(), index=df.index)
+    # Transform geohashes to coordinates (fast path using array)
+    coords_arr = np.array([geo_to_coords[g] for g in df["geohash"].astype(str).values], dtype=float)
+    df["latitude"]  = coords_arr[:, 0]
+    df["longitude"] = coords_arr[:, 1]
 
     if isin_switzerland:
         df = df[(df['latitude'] >= swiss_boundaries['min_lat']) & (df['latitude'] <= swiss_boundaries['max_lat']) & 
                 (df['longitude'] >= swiss_boundaries['min_lon']) & (df['longitude'] <= swiss_boundaries['max_lon'])]
 
     # Choose colormap based on user selection
-    colormap_name = st.sidebar.selectbox("Select Colormap", ["plasma", "coolwarm", "copper", "pink", "bone", "viridis", "magma", "inferno", "cividis"])
+    colormap_name = st.sidebar.selectbox("Select Colormap", ["coolwarm", "plasma", "copper", "pink", "bone", "viridis", "magma", "inferno", "cividis"])
     # Set colormap
-    plasma_colormap = set_colormap(colormap_name)
+    colormap = set_colormap(colormap_name)
 
     # Change opacity based on user selection
     opacity = st.sidebar.slider("Opacity", 0.1, 1.0, 0.7)
@@ -214,10 +221,13 @@ if ok:
         df,
         get_position=['longitude', 'latitude'],
         get_weight='count',
-        color_range=plasma_colormap,  # Apply Plasma colormap
+        color_range=colormap,  # Apply selected colormap
         aggregation = 'SUM',
         opacity=opacity,
-        pickable=False
+        pickable=False,
+        #radiusPixels=30,         # ↓ smaller radius = less GPU work
+        #intensity=1.0,           # tune down if still heavy
+        #threshold=0.05,          # raise to cut low-signal work
     )
 
     # Set initial view state based on the initial data
