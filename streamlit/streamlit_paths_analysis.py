@@ -1,5 +1,4 @@
 import pandas as pd
-from branca.colormap import linear
 import numpy as np
 import pydeck as pdk
 import streamlit as st
@@ -8,7 +7,6 @@ from geolib import geohash as geolib
 from matplotlib import colormaps as cmaps
 import pickle
 from pathlib import Path
-import time
 
 
 # Setup
@@ -20,7 +18,7 @@ st.markdown(
     <style>
         .stDeckGlJsonChart {
             height: calc(100vh - 100px) !important;  /* Adjusts for full viewport height */
-            min-height: 600px; /* Ensures a minimum height */
+            min-height: 600px; /* Ensures a minimum height */n
         }
         
         #deckgl-wrapper {
@@ -51,8 +49,6 @@ except:
 def geohash_to_coordinate(geohash):
     try:
         lat, lon = geolib.decode(geohash)
-        #lat = float(lat) + 0.00000001#(random.random() - 0.5) * 0.00000001
-        #lon = float(lon) + 0.00000001#(random.random() - 0.5) * 0.00000001
         return [float(lat), float(lon)]
     except:
         return [0.0, 0.0]
@@ -225,9 +221,6 @@ if ok:
         aggregation = 'SUM',
         opacity=opacity,
         pickable=False,
-        #radiusPixels=30,         # ↓ smaller radius = less GPU work
-        #intensity=1.0,           # tune down if still heavy
-        #threshold=0.05,          # raise to cut low-signal work
     )
 
     # Set initial view state based on the initial data
