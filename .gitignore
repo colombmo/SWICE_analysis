@@ -6,8 +6,8 @@ swiss_mots_*
 
 Test_movements.csv
 steps.csv
-all_movements_112.csv
-all_paths_110.csv
+all_movements_*
+all_paths_*
 
 # macos
 .DS_Store
