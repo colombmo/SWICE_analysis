@@ -1,1 +1,4 @@
+*.pkl filter=lfs diff=lfs merge=lfs -text
+*.json filter=lfs diff=lfs merge=lfs -text
+*.html filter=lfs diff=lfs merge=lfs -text
 streamlit/geohashes_to_coords.pkl filter=lfs diff=lfs merge=lfs -text
