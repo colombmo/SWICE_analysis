@@ -1,13 +1,15 @@
 import csv
 import re
 from playwright.sync_api import sync_playwright
+import os
 
 BASE = "https://swice-app.epfl.ch"  # no trailing slash
 LOGIN_URL = f"{BASE}/admin/login/"
 CHANGE_URL_TMPL = f"{BASE}/admin/experiments/lifestyle/{{id}}/change/"
 
-USERNAME = "admin"
-PASSWORD = "27kA8Qy@Tkx6"
+# Use .env for USERNAME and PASSWORD
+USERNAME = os.getenv("USERNAME")
+PASSWORD = os.getenv("PASSWORD")
 
 IDS = [
     1,2,3,4,5,6,7,8,9,10,
