@@ -9,6 +9,8 @@ steps.csv
 all_movements_*
 all_paths_*
 
+sensor_data.csv
+
 # macos
 .DS_Store
 
